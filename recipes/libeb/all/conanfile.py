@@ -10,7 +10,7 @@ class LibebConan(ConanFile):
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://github.com/mistydemeo/eb"
     license = "BSD-3-Clause"
-    description = "Libeb is the library for managing EB/EB-G/EB-XA ebooks"
+    description = "libeb is the library for managing EB/EB-G/EB-XA ebooks"
     topics = ("eb", "ebooks", "libeb", "epwing")
     settings = "os", "arch", "compiler", "build_type"
     options = {
@@ -86,8 +86,6 @@ class LibebConan(ConanFile):
     def _configure_autotools(self):
         if self._autotools:
             return self._autotools
-        with tools.chdir(self._source_subfolder):
-            self.run("autoreconf -fiv", win_bash=tools.os_info.is_windows)
         self._autotools = AutoToolsBuildEnvironment(
             self, win_bash=self._settings_build.os == "Windows")
         self._autotools.libs = []
@@ -106,10 +104,6 @@ class LibebConan(ConanFile):
                 self.dependencies["zlib"].package_folder, "include"))),
             "--with-zlib-libraries={}".format(tools.unix_path(os.path.join(
                 self.dependencies["zlib"].package_folder, "lib"))),
-            # "--with-gettext-includes={}".format(tools.unix_path(os.path.join(
-            #     self.build_requires["gettext"].package_folder, "include"))),
-            # "--with-gettext-libraries={}".format(tools.unix_path(os.path.join(
-            #     self.build_requires["gettext"].package_folder, "lib"))),
             "--with-iconv-includes={}".format(tools.unix_path(os.path.join(
                 self.dependencies["libiconv"].package_folder, "include"))),
             "--with-iconv-libraries={}".format(tools.unix_path(os.path.join(
@@ -151,6 +145,7 @@ class LibebConan(ConanFile):
         self.cpp_info.names["cmake_find_package_multi"] = "libeb"
 
         self.cpp_info.libs = ["eb"]
+        self.cpp_info.requires = ["zlib::zlib", "libiconv::libiconv"]
 
         binpath = os.path.join(self.package_folder, "bin")
         self.output.info("Appending PATH environment var: {}".format(binpath))

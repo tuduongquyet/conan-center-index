@@ -1,0 +1,50 @@
+diff --git a/configure.ac b/configure.ac
+index b7e49b3..a8a4891 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -154,12 +154,6 @@ AC_ARG_WITH(zlib-includes,
+ AC_HELP_STRING([--with-zlib-includes=DIR], [zlib include files are in DIR]),
+ [z_includedir="${withval}"], [z_includedir=''])
+ 
+-if test "X$z_includedir" != X; then
+-    ZLIBINCS="-I$z_includedir"
+-else
+-    ZLIBINCS=''
+-fi
+-
+ dnl *
+ dnl * --with-zlib-libraries option.
+ dnl *
+@@ -167,16 +161,24 @@ AC_ARG_WITH(zlib-libraries,
+ AC_HELP_STRING([--with-zlib-libraries=DIR], [zlib library files are in DIR]),
+     [z_libdir="${withval}"], [z_libdir=''])
+ 
+-if test "X$z_libdir" != X; then
+-    ZLIBLIBS="-L$z_libdir -lz"
+-    ZLIBDEPS=''
+-else
+-    ZLIBLIBS='-lz'
+-    ZLIBDEPS=''
+-fi
++dnl *
++dnl * Search for zlibVersion function in zlib library variants
++AC_SEARCH_LIBS([zlibVersion], [z zlib zdll], [
++  case "$ac_search_lib_result" in
++    z) ZLIB_VARIANT="-lz";;
++    zlib) ZLIB_VARIANT="-lzlib";;
++    zdll) ZLIB_VARIANT="-lzdll";;
++  esac
++], [
++  AC_MSG_ERROR([zlibVersion() not found in zlib library variants (-lz, -lzlib, -lzdll). You may need to install the zlib1g-dev or zlib-devel package.])
++])
++
++ZLIBINCS="-I$z_includedir"
++ZLIBLIBS="-L$z_libdir $ZLIB_VARIANT"
++ZLIBDEPS=''
+ 
+ dnl *
+-dnl * Check for zlib.
++dnl * Check if zlib is properly linked
+ dnl *
+ AC_MSG_CHECKING(for zlib)
+ save_CPPFLAGS=$CPPFLAGS

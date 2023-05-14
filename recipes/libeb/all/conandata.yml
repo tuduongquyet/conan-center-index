@@ -1,12 +1,10 @@
 sources:
   "4.4.3":
-    url: "https://github.com/mistydemeo/eb/archive/refs/tags/v4.4.3.tar.gz"
-    sha256: "74448639360a35098f2645c934e4fa77008086938fc15587b26cb36a6365aecb"
+    url: "https://github.com/mistydemeo/eb/releases/download/v4.4.3/eb-4.4.3.tar.bz2"
+    sha256: "abe710a77c6fc3588232977bb2f30a2e69ddfbe9fa8d0b05b0d67d95e36f4b5f"
 patches:
   "4.4.3":
-    - patch_file: "patches/0001-ebrefile-wrong-include.patch"
+    - patch_file: "patches/001-ebrefile-wrong-include.patch"
       base_path: "source_subfolder"
-    - patch_file: "patches/002-cross-compile-failed.patch"
-      base_path: "source_subfolder"
-    - patch_file: "patches/003-check-for-zlib.patch"
+    - patch_file: "patches/002-check-for-zlib.patch"
       base_path: "source_subfolder"
