@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index d2ae987..466345b 100644
+index ee08591..477ed77 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -21,10 +21,12 @@ cmake_minimum_required(VERSION 2.8)
+@@ -21,10 +21,12 @@ cmake_minimum_required(VERSION 3.5)
  set (PACKAGE_NAME opencc)
  project (${PACKAGE_NAME} CXX)
  include (CTest)
@@ -15,10 +15,11 @@ index d2ae987..466345b 100644
  option(ENABLE_GTEST "Build all tests." OFF)
  option(ENABLE_BENCHMARK "Build benchmark tests." OFF)
  option(ENABLE_DARTS "Build DartsDict (ocd format)." ON)
-@@ -77,10 +79,11 @@ endif()
+@@ -78,11 +80,11 @@ endif()
+ 
  ######## Directory
  
- set (DIR_PREFIX ${CMAKE_INSTALL_PREFIX})
+-set (DIR_PREFIX ${CMAKE_INSTALL_PREFIX})
 -set (DIR_INCLUDE ${DIR_PREFIX}/include/)
 -set (DIR_SHARE ${DIR_PREFIX}/share/)
 -set (DIR_ETC ${DIR_PREFIX}/etc/)
@@ -31,15 +32,19 @@ index d2ae987..466345b 100644
  
  if (DEFINED SHARE_INSTALL_PREFIX)
    set (DIR_SHARE ${SHARE_INSTALL_PREFIX})
-@@ -111,7 +114,7 @@ configure_file(
- 
- install(
-   FILES
--    ${CMAKE_BINARY_DIR}/opencc.pc
-+    ${CMAKE_CURRENT_BINARY_DIR}/opencc.pc
-   DESTINATION
-     ${DIR_LIBRARY}/pkgconfig
- )
+diff --git a/data/CMakeLists.txt b/data/CMakeLists.txt
+index e9b921f..423b97d 100644
+--- a/data/CMakeLists.txt
++++ b/data/CMakeLists.txt
+@@ -136,7 +136,7 @@ foreach(DICT ${DICTS})
+     COMMENT
+       "Building ${DICT}.ocd2"
+     COMMAND
+-      ${OPENCC_DICT_BIN}
++      $<TARGET_FILE:${OPENCC_DICT_BIN}>
+         --input ${DICT_${DICT}_INPUT}
+         --output ${DICT}.ocd2
+         --from text
 diff --git a/opencc.pc.in b/opencc.pc.in
 index 93ff260..188609e 100644
 --- a/opencc.pc.in
@@ -51,7 +56,7 @@ index 93ff260..188609e 100644
 -Cflags: -I${includedir}/opencc
 +Cflags: -I${includedir}
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 11d14e4..b560f5d 100644
+index c0a0b10..d6979df 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
 @@ -5,12 +5,18 @@ include_directories("${PROJECT_SOURCE_DIR}/src")
@@ -90,3 +95,14 @@ index 11d14e4..b560f5d 100644
 +if(BUILD_TOOLS)
 +  add_subdirectory(tools)
 +endif()
+diff --git a/src/tools/CMakeLists.txt b/src/tools/CMakeLists.txt
+index 373b9cc..68489ef 100644
+--- a/src/tools/CMakeLists.txt
++++ b/src/tools/CMakeLists.txt
+@@ -16,5 +16,5 @@ target_link_libraries(opencc_phrase_extract libopencc)
+ 
+ install(
+   TARGETS opencc opencc_dict opencc_phrase_extract
+-  RUNTIME DESTINATION bin
++  RUNTIME DESTINATION ${DIR_BIN}
+ )
