@@ -1,0 +1,13 @@
+sources:
+  1.0.2:
+    sha256: add272bb09e6384a4833ffca4896350fdb16e0ca22df68c0384773c67a175594
+    url:
+      - "https://github.com/google/woff2/archive/refs/tags/v1.0.2.tar.gz"
+patches:
+  1.0.2:
+    - patch_file: patches/woff_dll.patch
+      patch_description: "Add missing DLL export"
+      patch_type: "portability"
+    - patch_file: patches/fix_cmake.patch
+      patch_description: "fix CMake configuration"
+      patch_type: "portability"

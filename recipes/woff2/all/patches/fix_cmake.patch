@@ -1,0 +1,73 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ecfbb83..3ad0a0d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -79,7 +79,7 @@ add_library(woff2dec
+             src/woff2_out.cc)
+ target_link_libraries(woff2dec woff2common "${BROTLIDEC_LIBRARIES}")
+ add_executable(woff2_decompress src/woff2_decompress.cc)
+-target_link_libraries(woff2_decompress woff2dec)
++target_link_libraries(woff2_decompress woff2dec "${BROTLIDEC_LIBRARIES}")
+ 
+ # WOFF2 Encoder
+ add_library(woff2enc
+@@ -90,11 +90,11 @@ add_library(woff2enc
+             src/woff2_enc.cc)
+ target_link_libraries(woff2enc woff2common "${BROTLIENC_LIBRARIES}")
+ add_executable(woff2_compress src/woff2_compress.cc)
+-target_link_libraries(woff2_compress woff2enc)
++target_link_libraries(woff2_compress woff2enc "${BROTLIENC_LIBRARIES}")
+ 
+ # WOFF2 info
+ add_executable(woff2_info src/woff2_info.cc)
+-target_link_libraries(woff2_info woff2common)
++target_link_libraries(woff2_info woff2common "${BROTLIENC_LIBRARIES}")
+ 
+ foreach(lib woff2common woff2dec woff2enc)
+   set_target_properties(${lib} PROPERTIES
+diff --git a/cmake/FindBrotliDec.cmake b/cmake/FindBrotliDec.cmake
+index abb06f4..cb292c0 100644
+--- a/cmake/FindBrotliDec.cmake
++++ b/cmake/FindBrotliDec.cmake
+@@ -18,11 +18,18 @@ find_path(BROTLIDEC_INCLUDE_DIRS
+     HINTS ${PC_BROTLIDEC_INCLUDEDIR}
+ )
+ 
++find_library(BROTLICOMMON_LIBRARIES
++    NAMES brotlicommon
++    HINTS ${PC_BROTLIDEC_LIBDIR}
++)
++
+ find_library(BROTLIDEC_LIBRARIES
+     NAMES brotlidec
+     HINTS ${PC_BROTLIDEC_LIBDIR}
+ )
+ 
++set(BROTLIDEC_LIBRARIES ${BROTLIDEC_LIBRARIES} ${BROTLICOMMON_LIBRARIES})
++
+ include(FindPackageHandleStandardArgs)
+ find_package_handle_standard_args(BrotliDec
+     REQUIRED_VARS BROTLIDEC_INCLUDE_DIRS BROTLIDEC_LIBRARIES
+diff --git a/cmake/FindBrotliEnc.cmake b/cmake/FindBrotliEnc.cmake
+index 4be347d..91e5384 100644
+--- a/cmake/FindBrotliEnc.cmake
++++ b/cmake/FindBrotliEnc.cmake
+@@ -18,11 +18,18 @@ find_path(BROTLIENC_INCLUDE_DIRS
+     HINTS ${PC_BROTLIENC_INCLUDEDIR}
+ )
+ 
++find_library(BROTLICOMMON_LIBRARIES
++    NAMES brotlicommon
++    HINTS ${PC_BROTLIENC_LIBDIR}
++)
++
+ find_library(BROTLIENC_LIBRARIES
+     NAMES brotlienc
+     HINTS ${PC_BROTLIENC_LIBDIR}
+ )
+ 
++set(BROTLIENC_LIBRARIES ${BROTLIENC_LIBRARIES} ${BROTLICOMMON_LIBRARIES})
++
+ include(FindPackageHandleStandardArgs)
+ find_package_handle_standard_args(BrotliEnc
+     REQUIRED_VARS BROTLIENC_INCLUDE_DIRS BROTLIENC_LIBRARIES
